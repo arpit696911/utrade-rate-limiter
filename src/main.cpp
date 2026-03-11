@@ -8,9 +8,7 @@
 
 void simulateClient(RateLimiter& limiter, const std::string& clientId, int requests) {
     for (int i = 0; i < requests; ++i) {
-        bool allowed = limiter.allowRequest(clientId);
-        std::cout << "Client " << clientId << " request " << (i + 1)
-                  << (allowed ? " allowed" : " blocked") << '\n';
+        (void)limiter.allowRequest(clientId);
 
         // Small sleep to spread requests within/over windows
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
