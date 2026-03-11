@@ -5,7 +5,7 @@ RateLimiter::RateLimiter(std::size_t max_requests,
     : max_requests_(max_requests),
       window_duration_(window_duration) {}
 
-bool RateLimiter::allow(const std::string& client_id) {
+bool RateLimiter::allowRequest(const std::string& client_id) {
     const auto now = Clock::now();
 
     std::lock_guard<std::mutex> lock(mutex_);

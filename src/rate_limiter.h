@@ -19,7 +19,7 @@ public:
                 std::chrono::milliseconds window_duration);
 
     // Returns true if the request from `client_id` is allowed, false otherwise.
-    bool allow(const std::string& client_id);
+    bool allowRequest(const std::string& client_id);
 
     // Optional helpers
     std::size_t maxRequests() const noexcept { return max_requests_; }
