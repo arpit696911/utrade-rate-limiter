@@ -39,3 +39,30 @@ bool RateLimiter::allowRequest(const std::string& client_id) {
     return false;
 }
 
+bool RateLimiter::allowRequestSliding(const std::string& client_id) {
+    const auto now = Clock::now();
+
+    std::lock_guard<std::mutex> lock(mutex_);
+
+    auto& log = sliding_logs_[client_id];
+
+    // Remove timestamps that are outside the current sliding window.
+    while (!log.empty()) {
+        const auto oldest = log.front();
+        const auto age =
+            std::chrono::duration_cast<std::chrono::milliseconds>(now - oldest);
+        if (age >= window_duration_) {
+            log.pop_front();
+        } else {
+            break;
+        }
+    }
+
+    if (log.size() < max_requests_) {
+        log.push_back(now);
+        return true;
+    }
+
+    return false;
+}
+

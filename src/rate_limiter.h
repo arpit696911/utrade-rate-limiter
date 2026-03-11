@@ -2,6 +2,7 @@
 
 #include <chrono>
 #include <mutex>
+#include <deque>
 #include <string>
 #include <unordered_map>
 
@@ -18,8 +19,11 @@ public:
     RateLimiter(std::size_t max_requests,
                 std::chrono::milliseconds window_duration);
 
-    // Returns true if the request from `client_id` is allowed, false otherwise.
+    // Fixed window algorithm.
     bool allowRequest(const std::string& client_id);
+
+    // Sliding window log algorithm.
+    bool allowRequestSliding(const std::string& client_id);
 
     // Optional helpers
     std::size_t maxRequests() const noexcept { return max_requests_; }
@@ -36,5 +40,6 @@ private:
 
     mutable std::mutex mutex_;
     std::unordered_map<std::string, ClientWindow> clients_;
+    std::unordered_map<std::string, std::deque<Clock::time_point>> sliding_logs_;
 };
 
